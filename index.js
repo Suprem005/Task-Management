@@ -8,7 +8,7 @@ app.use(express.json());
 // TODO: enable CORS
 
 // connect DB
-connectDB();
+await connectDB();
 //  register routes
 
 // TODO: handle global errors

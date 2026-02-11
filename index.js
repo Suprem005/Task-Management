@@ -1,5 +1,7 @@
 import express from "express";
 import connectDB from "./modules/services/db.connect.js";
+import userRoutes from "./user/user.controller.js";
+
 const app = express();
 
 // to make app understand json
@@ -10,6 +12,7 @@ app.use(express.json());
 // connect DB
 await connectDB();
 //  register routes
+app.use(userRoutes);
 
 // TODO: handle global errors
 

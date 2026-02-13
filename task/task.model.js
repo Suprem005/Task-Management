@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { taskStatus } from "../modules/constant/general.constant.js";
 
 const taskSchema = new mongoose.Schema(
   {
@@ -24,7 +25,7 @@ const taskSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ["pending", "in progress", "completed"],
+      enum: taskStatus,
       default: "pending",
     },
 
@@ -33,9 +34,18 @@ const taskSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timeStamp: true }, // adds created by and updatedAt automatically
+  { timestamps: true }, // adds created by and updatedAt automatically
 );
 
+// to remove userId field in response when the details are converted to JSON from DB
+
+// taskSchema.methods.toJSON = function () {
+//   var obj = this.toObject();
+//   delete obj.userId;
+//   return obj;
+// };
+
+// create model
 const Task = mongoose.model("Task", taskSchema);
 
 export default Task;

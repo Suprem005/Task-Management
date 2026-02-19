@@ -6,7 +6,10 @@ import {
 import validateMongoIdFromParams from "../modules/middleware/validate.mongo.id.js";
 import validateReqBody from "../modules/middleware/validate.req.body.js";
 import Task from "./task.model.js";
-import { addTaskValidationSchema } from "./task.validation.js";
+import {
+  addTaskValidationSchema,
+  paginationDataValidationSchema,
+} from "./task.validation.js";
 import checkMongoIdsEquality from "../modules/utils/mongo.id.equality.js";
 
 const router = express.Router();
@@ -125,7 +128,42 @@ router.get(
 );
 
 // list task by normalUser
-router.post("/task/user/list", isNormalUser, (req, res) => {
-  return res.status(200).send({ message: "Success..." });
-});
+router.post(
+  "/task/user/list",
+  isNormalUser,
+  validateReqBody(paginationDataValidationSchema),
+  async (req, res) => {
+    // extract pagination data from req.body
+
+    const { page, limit, searchText } = req.body;
+    //  calculate skip
+    const skip = (page - 1) * limit;
+
+    // condition for search Text
+    let match = { userId: req.loggedInUserId };
+
+    if (searchText) {
+      match.title = { $regex: searchText, $options: "i" };
+    }
+
+    const tasks = await Task.aggregate([
+      {
+        $match: match,
+      },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $project: {
+          title: 1,
+          description: { $substr: ["$description", 0, 200] },
+          status: 1,
+          dueDate: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
+    return res.status(200).send({ message: "Success...", taskList: tasks });
+  },
+);
 export default router;

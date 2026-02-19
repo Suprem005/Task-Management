@@ -39,11 +39,11 @@ const taskSchema = new mongoose.Schema(
 
 // to remove userId field in response when the details are converted to JSON from DB
 
-// taskSchema.methods.toJSON = function () {
-//   var obj = this.toObject();
-//   delete obj.userId;
-//   return obj;
-// };
+taskSchema.methods.toJSON = function () {
+  var obj = this.toObject();
+  delete obj.userId;
+  return obj;
+};
 
 // create model
 const Task = mongoose.model("Task", taskSchema);

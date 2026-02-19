@@ -104,4 +104,28 @@ router.put(
   },
 );
 
+// get product details
+router.get(
+  "/task/detail/:id",
+  isUser,
+  validateMongoIdFromParams,
+  async (req, res) => {
+    // extract taskId from req.params
+    const taskId = req.params.id;
+
+    // find task using taskId
+    const task = await Task.findOne({ _id: taskId });
+    // if nto task, throw error
+    if (!task) {
+      return res.status(404).send({ message: "Task does not exists." });
+    }
+    // send res
+    return res.status(200).send({ message: "Success...", taskDetail: task });
+  },
+);
+
+// list task by normalUser
+router.post("/task/user/list", isNormalUser, (req, res) => {
+  return res.status(200).send({ message: "Success..." });
+});
 export default router;

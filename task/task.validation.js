@@ -6,3 +6,5 @@ export const addTaskValidationSchema = Yup.object({
   status: Yup.string().required().oneOf(taskStatus),
   dueDate: Yup.date().required(),
 });
+
+export const paginationDataValidaitonSchema = Yup.object();

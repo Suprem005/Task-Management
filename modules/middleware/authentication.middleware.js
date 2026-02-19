@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../../user/user.model.js";
 
-// checking for if user?
+//! checking for if user?
 export const isUser = async (req, res, next) => {
   // extract token from req.headers
   const { authorization } = req.headers;
@@ -14,7 +14,7 @@ export const isUser = async (req, res, next) => {
   if (!token) {
     return res.status(401).send({ message: "Unauthorized..." });
   }
-
+  // verify token
   let payload;
   try {
     const secretKey = process.env.ACCESS_TOKEN_SECRET_KEY;
@@ -33,9 +33,15 @@ export const isUser = async (req, res, next) => {
   if (!user) {
     return res.status(401).send({ message: "Unauthorized..." });
   }
+
+  // add user._id as loggedInUserId
+  req.loggedInUserId = user._id;
+
+  // call next function
+  next();
 };
-// ----------------------------------------
-// role checking for admin
+
+//! role checking for admin
 export const isAdmin = async (req, res, next) => {
   // extract token from req.headers
   const { authorization } = req.headers;

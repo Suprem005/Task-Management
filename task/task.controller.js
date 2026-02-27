@@ -118,7 +118,7 @@ router.get(
 
     // find task using taskId
     const task = await Task.findOne({ _id: taskId });
-    // if nto task, throw error
+    // if not task, throw error
     if (!task) {
       return res.status(404).send({ message: "Task does not exists." });
     }
